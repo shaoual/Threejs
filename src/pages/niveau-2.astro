@@ -1,0 +1,319 @@
+---
+import '../styles/global.css';
+import Navigation from '../components/Navigation.astro';
+---
+
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Niveau 2 - Formes Multiples | Three.js</title>
+	</head>
+	<body class="bg-gray-900 overflow-hidden">
+		<Navigation />
+		<canvas id="canvas3d" class="w-full h-screen"></canvas>
+	</body>
+</html>
+
+<script>
+	// Importation de la bibliothèque Three.js pour le rendu 3D
+	import * as THREE from 'three';
+	// Importation de GSAP pour les animations fluides
+	import { gsap } from 'gsap';
+	// Importation du loader pour les textures HDR (High Dynamic Range)
+	import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+
+	// === CONFIGURATION DE BASE ===
+	
+	// Récupération de l'élément canvas HTML pour y dessiner la scène 3D
+	const canvas = document.getElementById('canvas3d') as HTMLCanvasElement;
+	
+	// Création de la scène Three.js (conteneur pour tous les objets 3D)
+	const scene = new THREE.Scene();
+	// Définition de la couleur de fond de la scène (bleu très foncé)
+	scene.background = new THREE.Color(0x0a0a1a);
+
+	// === CHARGEMENT DE LA TEXTURE D'ENVIRONNEMENT HDR ===
+	
+	// Création d'un loader pour les textures HDR (format RGBE)
+	const rgbeLoader = new RGBELoader();
+	// Chargement asynchrone de la texture HDR d'environnement
+	rgbeLoader.load(
+		// URL de la texture HDR (studio lighting)
+		'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_08_1k.hdr',
+		(texture) => {
+			// Configuration de la texture en mapping équirectangulaire
+			texture.mapping = THREE.EquirectangularReflectionMapping;
+			// Application de la texture comme environnement de la scène
+			// Cela fournit l'éclairage IBL (Image Based Lighting) et les reflets
+			scene.environment = texture;
+			// Optionnel: utiliser aussi comme fond (commenté pour garder le fond bleu)
+			// scene.background = texture;
+		}
+	);
+
+	// === CONFIGURATION DE LA CAMÉRA ===
+	
+	// Création d'une caméra en perspective (simulation de l'œil humain)
+	const camera = new THREE.PerspectiveCamera(
+		75, // Angle de vue (field of view) en degrés
+		window.innerWidth / window.innerHeight, // Ratio d'aspect (largeur/hauteur)
+		0.1, // Plan de clipping proche (objets plus près ne sont pas rendus)
+		1000 // Plan de clipping lointain (objets plus loin ne sont pas rendus)
+	);
+	// Positionnement de la caméra sur l'axe Z (recul de 8 unités)
+	camera.position.z = 8;
+
+	// === CONFIGURATION DU RENDERER ===
+	
+	// Création du moteur de rendu WebGL
+	const renderer = new THREE.WebGLRenderer({ 
+		canvas, // Canvas HTML sur lequel dessiner
+		antialias: true // Activation de l'antialiasing pour des bords lisses
+	});
+	// Définition de la taille du rendu (plein écran)
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	// Adaptation à la densité de pixels de l'écran (Retina, etc.)
+	renderer.setPixelRatio(window.devicePixelRatio);
+	// Activation du tone mapping ACES Filmic pour un rendu HDR réaliste
+	renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	// Réglage de l'exposition pour contrôler la luminosité globale
+	renderer.toneMappingExposure = 1.0;
+
+	// === CRÉATION DES FORMES GÉOMÉTRIQUES ===
+	
+	// Tableau pour stocker toutes les formes créées
+	const shapes: THREE.Mesh[] = [];
+
+	// --- SPHÈRE ---
+	// Création de la géométrie d'une sphère (rayon: 0.8, segments horizontaux: 32, segments verticaux: 32)
+	const sphereGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+	// Création d'un matériau standard avec propriétés physiques réalistes
+	const sphereMaterial = new THREE.MeshStandardMaterial({ 
+		color: 0xff6b9d, // Couleur rose
+		metalness: 0.8, // Aspect métallique (0 = mat, 1 = très métallique)
+		roughness: 0.05 // Rugosité de la surface (0 = lisse/brillant, 1 = rugueux/mat)
+	});
+	// Création du mesh (combinaison géométrie + matériau)
+	const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+	// Positionnement de la sphère à gauche (-3 sur l'axe X)
+	sphere.position.x = -3;
+	// Ajout de la sphère à la scène
+	scene.add(sphere);
+	// Ajout de la sphère au tableau de formes
+	shapes.push(sphere);
+
+	// --- TORUS (ANNEAU) ---
+	// Création de la géométrie d'un torus (rayon principal: 0.7, rayon du tube: 0.3, segments radiaux: 16, segments tubulaires: 100)
+	const torusGeometry = new THREE.TorusGeometry(0.7, 0.3, 16, 100);
+	// Matériau standard avec effet métallique cyan
+	const torusMaterial = new THREE.MeshStandardMaterial({ 
+		color: 0x4ecdc4, // Couleur cyan
+		metalness: 0.7, // Aspect très métallique
+		roughness: 0.3 // Surface assez lisse
+	});
+	// Création du mesh torus
+	const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+	// Positionnement au centre (0 sur l'axe X)
+	torus.position.x = 0;
+	// Ajout à la scène
+	scene.add(torus);
+	// Ajout au tableau de formes
+	shapes.push(torus);
+
+	// --- CÔNE ---
+	// Création de la géométrie d'un cône (rayon: 0.8, hauteur: 1.5, segments radiaux: 32)
+	const coneGeometry = new THREE.ConeGeometry(0.8, 1.5, 32);
+	// Matériau standard jaune
+	const coneMaterial = new THREE.MeshStandardMaterial({ 
+		color: 0xffe66d, // Couleur jaune
+		metalness: 0.6, // Aspect moyennement métallique
+		roughness: 0.4 // Surface moyennement rugueuse
+	});
+	// Création du mesh cône
+	const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+	// Positionnement à droite (3 sur l'axe X)
+	cone.position.x = 3;
+	// Ajout à la scène
+	scene.add(cone);
+	// Ajout au tableau de formes
+	shapes.push(cone);
+
+	// --- OCTAÈDRE ---
+	// Création de la géométrie d'un octaèdre (rayon: 0.9, niveau de subdivision: 0)
+	const octahedronGeometry = new THREE.OctahedronGeometry(0.9, 0);
+	// Matériau standard violet très métallique
+	const octahedronMaterial = new THREE.MeshStandardMaterial({ 
+		color: 0xaa96da, // Couleur violet clair
+		metalness: 0.8, // Très métallique
+		roughness: 0.1 // Très lisse (brillant)
+	});
+	// Création du mesh octaèdre
+	const octahedron = new THREE.Mesh(octahedronGeometry, octahedronMaterial);
+	// Positionnement en haut à gauche (X: -1.5, Y: 2, Z: 0)
+	octahedron.position.set(-1.5, 2, 0);
+	// Ajout à la scène
+	scene.add(octahedron);
+	// Ajout au tableau de formes
+	shapes.push(octahedron);
+
+	// --- DODÉCAÈDRE ---
+	// Création de la géométrie d'un dodécaèdre (rayon: 0.8, niveau de subdivision: 0)
+	const dodecahedronGeometry = new THREE.DodecahedronGeometry(0.8, 0);
+	// Matériau standard vert menthe
+	const dodecahedronMaterial = new THREE.MeshStandardMaterial({ 
+		color: 0x95e1d3, // Couleur vert menthe
+		metalness: 0.5, // Aspect moyennement métallique
+		roughness: 0.3 // Surface assez lisse
+	});
+	// Création du mesh dodécaèdre
+	const dodecahedron = new THREE.Mesh(dodecahedronGeometry, dodecahedronMaterial);
+	// Positionnement en haut à droite (X: 1.5, Y: 2, Z: 0)
+	dodecahedron.position.set(1.5, 2, 0);
+	// Ajout à la scène
+	scene.add(dodecahedron);
+	// Ajout au tableau de formes
+	shapes.push(dodecahedron);
+
+	// === SYSTÈME D'ÉCLAIRAGE ===
+	
+	// Création d'une lumière ambiante (éclaire uniformément toute la scène)
+	const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+	// Ajout de la lumière ambiante à la scène
+	scene.add(ambientLight);
+
+	// Création d'une lumière ponctuelle rose à gauche
+	const pointLight1 = new THREE.PointLight(0xff6b9d, 2, 100);
+	// Positionnement de la lumière (X: -5, Y: 3, Z: 3)
+	pointLight1.position.set(-5, 3, 3);
+	// Ajout de la lumière à la scène
+	scene.add(pointLight1);
+
+	// Création d'une lumière ponctuelle cyan à droite
+	const pointLight2 = new THREE.PointLight(0x4ecdc4, 2, 100);
+	// Positionnement de la lumière (X: 5, Y: 3, Z: 3)
+	pointLight2.position.set(5, 3, 3);
+	// Ajout de la lumière à la scène
+	scene.add(pointLight2);
+
+	// === ANIMATIONS GSAP ===
+	
+	// Création d'une timeline GSAP qui se répète à l'infini
+	const tl = gsap.timeline({ repeat: -1 });
+
+	// Parcours de toutes les formes pour leur appliquer des animations
+	shapes.forEach((shape, index) => {
+		// Animation de rotation continue sur l'axe Y (tour complet = 2π radians)
+		gsap.to(shape.rotation, {
+			y: Math.PI * 2, // Rotation de 360 degrés
+			duration: 3 + index, // Durée variable selon l'index (3s, 4s, 5s, etc.)
+			repeat: -1, // Répétition infinie
+			ease: 'none' // Vitesse constante (pas d'accélération/décélération)
+		});
+
+		// Animation de position verticale avec effet de rebond
+		tl.to(shape.position, {
+			y: shape.position.y + 1, // Déplacement de 1 unité vers le haut
+			duration: 1.5, // Durée de 1.5 secondes
+			ease: 'power1.inOut', // Accélération au début, décélération à la fin
+			yoyo: true, // Retour à la position initiale
+			repeat: 1 // Répétition une fois (aller-retour)
+		}, index * 0.2); // Décalage temporel (stagger) de 0.2s entre chaque forme
+	});
+
+	// === INTERACTION SOURIS (RAYCASTING) ===
+	
+	// Création d'un raycaster (lance un rayon depuis la caméra vers la souris)
+	const raycaster = new THREE.Raycaster();
+	// Vecteur 2D pour stocker la position normalisée de la souris (-1 à 1)
+	const mouse = new THREE.Vector2();
+	// Variable pour stocker l'objet actuellement survolé
+	let hoveredObject: THREE.Mesh | null = null;
+
+	// Écouteur d'événement pour le mouvement de la souris
+	window.addEventListener('mousemove', (event) => {
+		// Conversion des coordonnées souris en coordonnées normalisées (-1 à 1)
+		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+		// Configuration du raycaster depuis la caméra vers la position de la souris
+		raycaster.setFromCamera(mouse, camera);
+		// Détection des intersections entre le rayon et les objets de la scène
+		const intersects = raycaster.intersectObjects(shapes);
+
+		// Si la souris survole au moins un objet
+		if (intersects.length > 0) {
+			// Récupération du premier objet intersecté (le plus proche)
+			const newHovered = intersects[0].object as THREE.Mesh;
+			
+			// Si l'objet survolé est différent du précédent
+			if (hoveredObject !== newHovered) {
+				// Réinitialisation de l'échelle de l'ancien objet survolé
+				if (hoveredObject) {
+					gsap.to(hoveredObject.scale, {
+						x: 1, // Échelle normale sur X
+						y: 1, // Échelle normale sur Y
+						z: 1, // Échelle normale sur Z
+						duration: 0.3 // Durée de l'animation de retour
+					});
+				}
+
+				// Mise à jour de la référence de l'objet survolé
+				hoveredObject = newHovered;
+				// Animation d'agrandissement du nouvel objet survolé
+				gsap.to(hoveredObject.scale, {
+					x: 1.3, // Agrandissement de 30% sur X
+					y: 1.3, // Agrandissement de 30% sur Y
+					z: 1.3, // Agrandissement de 30% sur Z
+					duration: 0.3, // Durée de l'animation
+					ease: 'back.out(1.7)' // Effet de rebond élastique
+				});
+			}
+		} else if (hoveredObject) {
+			// Si la souris ne survole plus aucun objet, réinitialisation
+			gsap.to(hoveredObject.scale, {
+				x: 1, // Retour à l'échelle normale sur X
+				y: 1, // Retour à l'échelle normale sur Y
+				z: 1, // Retour à l'échelle normale sur Z
+				duration: 0.3 // Durée de l'animation de retour
+			});
+			// Réinitialisation de la référence
+			hoveredObject = null;
+		}
+	});
+
+	// === GESTION DU REDIMENSIONNEMENT ===
+	
+	// Écouteur d'événement pour le redimensionnement de la fenêtre
+	window.addEventListener('resize', () => {
+		// Mise à jour du ratio d'aspect de la caméra
+		camera.aspect = window.innerWidth / window.innerHeight;
+		// Recalcul de la matrice de projection de la caméra
+		camera.updateProjectionMatrix();
+		// Mise à jour de la taille du renderer
+		renderer.setSize(window.innerWidth, window.innerHeight);
+	});
+
+	// === BOUCLE D'ANIMATION ===
+	
+	// Fonction d'animation appelée à chaque frame
+	function animate() {
+		// Demande au navigateur d'appeler animate() à la prochaine frame (60 FPS)
+		requestAnimationFrame(animate);
+
+		// Calcul du temps écoulé pour des animations fluides
+		const time = Date.now() * 0.0003;
+		// Déplacement circulaire de la caméra autour de la scène (sur l'axe X)
+		camera.position.x = Math.sin(time) * 2;
+		// La caméra regarde toujours le centre de la scène (0, 0, 0)
+		camera.lookAt(0, 0, 0);
+
+		// Rendu de la scène depuis le point de vue de la caméra
+		renderer.render(scene, camera);
+	}
+
+	// Lancement de la boucle d'animation
+	animate();
+</script>

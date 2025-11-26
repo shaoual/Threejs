@@ -1,0 +1,35 @@
+---
+const pages = [
+  { href: '/', label: 'Niveau 1', description: 'Cube simple' },
+  { href: '/niveau-2', label: 'Niveau 2', description: 'Formes multiples' },
+  { href: '/niveau-3', label: 'Niveau 3', description: 'ScrollTrigger Camera' },
+  { href: '/niveau-4', label: 'Niveau 4', description: 'Modèle 3D' },
+  { href: '/niveau-5', label: 'Niveau 5', description: 'ScrollTrigger Modèle 3D' },
+  { href: '/niveau-6', label: 'Niveau 6', description: 'Blob Perlin Noise' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="fixed top-0 left-0 w-full bg-gray-800/90 backdrop-blur-sm border-b border-gray-700 z-50">
+  <div class="container mx-auto px-6 py-3">
+    <div class="flex flex-col gap-3">
+      <h1 class="text-2xl font-bold text-white">Three.js exemples</h1>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-2">
+        {pages.map(page => (
+          <a 
+            href={page.href}
+            class={`px-3 py-2 rounded-lg transition-all text-center ${
+              currentPath === page.href 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            <div class="font-semibold text-sm">{page.label}</div>
+            <div class="text-xs opacity-75 hidden sm:block">{page.description}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</nav>
