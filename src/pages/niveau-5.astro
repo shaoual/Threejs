@@ -124,12 +124,12 @@ import rendu08 from '../img/rendu-08.jpg';
 
 	// Chargement du modèle depuis le dossier public
 	gltfLoader.load(
-		'/bouilloire-etape13-optim.glb',
+		'/TP_Blender_Mug.glb',
 		(gltf) => {
 			loadedModel = gltf.scene;
 			
 			// Configuration du modèle - centré au milieu de la scène
-			loadedModel.scale.set(2, 2, 2);
+			loadedModel.scale.set(0.7, 0.7, 0.7);
 			loadedModel.position.set(0, -1, 0);
 			
 			// Activation des ombres pour tous les meshes
