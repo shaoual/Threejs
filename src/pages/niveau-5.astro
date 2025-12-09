@@ -2,9 +2,13 @@
 import '../styles/global.css';
 import Navigation from '../components/Navigation.astro';
 import { Image } from 'astro:assets';
-import rendu06 from '../img/rendu-06.jpg';
-import rendu07 from '../img/rendu-07.jpg';
-import rendu08 from '../img/rendu-08.jpg';
+import rendu06 from '/src/img/Mockup Produit Studio (1).png';
+import rendu07 from '/Users/selmahaoual/Documents/GitHub/Threejs/src/img/Mockup Minimaliste (1).png';
+import rendu08 from '/Users/selmahaoual/Documents/GitHub/Threejs/src/img/Mockup Lifestyle (1).png';
+
+/* Si tu as des photos réelles, importe-les ici (optionnel) */
+import real01 from '/src/img/Mockup Créatif (1).png';
+import real02 from '/Users/selmahaoual/Documents/GitHub/Threejs/src/img/Mockup Flat Lay (1).png';
 ---
 
 <html lang="fr">
@@ -13,31 +17,65 @@ import rendu08 from '../img/rendu-08.jpg';
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Niveau 10 - ScrollTrigger 3D Model | Three.js</title>
+		<title>Projet Tasse 3D – Blender & Three.js</title>
 	</head>
-	<body class="bg-gray-900">
+	<body class="bg-gray-900 text-white">
 		<Navigation />
 
 		
 		<!-- Sections pour le scroll -->
 		<div class="relative">
+
+ <!-- 1. Présentation -->
+
+	  <section class="min-h-screen flex items-center relative z-10 px-10">
+				<div class="max-w-3xl bg-black/60 backdrop-blur-md p-10 rounded-2xl">
+					<h1 class="text-4xl font-bold mb-6">Tasse en céramique – Modélisation 3D</h1>
+					<p class="text-gray-300 leading-relaxed">
+						Ce projet présente la modélisation d’une tasse en céramique réalisée sur Blender.
+						L’objectif était de reproduire un objet du quotidien en respectant ses proportions,
+						sa forme et son matériau, puis de l’intégrer dans une scène 3D interactive.
+					</p>
+					<p class="text-gray-300 leading-relaxed mt-4">
+						La tasse est volontairement simple afin de mettre en valeur le travail de volume,
+						de surface et d’éclairage, ainsi que son intégration en temps réel sur le web.
+					</p>
+				</div>
+			</section>
+
 			<section class="h-screen flex items-center ml-10 justify-center">
 				<canvas id="canvas3d" class="fixed top-0 left-0 w-full h-screen"></canvas>
 			</section>
 			<section class="h-screen flex items-center ml-10 relative z-10">
 				<div class="bg-black/50 backdrop-blur-md p-8 rounded-2xl max-w-md">
-					<h3 class="text-2xl font-bold text-white mb-4">Vue de Face</h3>
+					<h3 class="text-2xl font-bold text-white mb-4">Intégration 3D temps réel</h3>
 					<Image src={rendu06} alt="Rendu de face" class="w-full h-48 object-cover rounded-lg mb-4" />
-					<p class="text-gray-300">La caméra se déplace autour du modèle 3D en fonction de votre scroll pour révéler tous ses détails.</p>
+					<p class="text-gray-300">La tasse est intégrée sur le site grâce à la librairie Three.js. Le modèle 3D,
+						exporté depuis Blender au format GLB, est affiché en temps réel dans le navigateur.</p>
+				<p class="text-gray-300 leading-relaxed mt-4">
+						Une animation contrôlée par le scroll permet de faire tourner l’objet et la caméra
+						autour de celui-ci, offrant une exploration fluide et immersive du modèle.
+					</p>
 				</div>
 			</section>
+
 			<section class="h-screen flex items-center ml-10 relative z-10">
 				<div class="bg-black/50 backdrop-blur-md p-8 rounded-2xl max-w-md">
-					<h3 class="text-2xl font-bold text-white mb-4">Vue Latérale</h3>
+					<h3 class="text-2xl font-bold text-white mb-4">Processus de création</h3>
 					<Image src={rendu07} alt="Rendu latéral" class="w-full h-48 object-cover rounded-lg mb-4" />
-					<p class="text-gray-300">Découvrez le modèle sous tous les angles avec une animation fluide pilotée par le scroll.</p>
+					<p class="text-gray-300">La tasse a été modélisée à partir de formes de base dans Blender. Des techniques
+						comme l’extrusion, la subdivision et le lissage ont été utilisées afin d’obtenir
+						des courbes propres et un rendu harmonieux.</p>
+
+						<p class="text-gray-300 leading-relaxed mt-4">
+						Un matériau de type céramique a ensuite été appliqué, avec un léger effet de
+						réflexion. Le modèle a été exporté au format GLB afin d’assurer de bonnes
+						performances sur le web.
+					</p>
 				</div>
 			</section>
+
+
 			<section class="h-screen flex items-center ml-10 relative z-10">
 				<div class="bg-black/50 backdrop-blur-md p-8 rounded-2xl max-w-md">
 					<h3 class="text-2xl font-bold text-white mb-4">Vue Finale</h3>
@@ -45,6 +83,55 @@ import rendu08 from '../img/rendu-08.jpg';
 					<p class="text-gray-300">L'orchestration complète révélée avec un éclairage dynamique et des effets atmosphériques.</p>
 				</div>
 			</section>
+----- A MODIFIER -----
+
+			<!-- VUE DE FACE -->
+			<section class="h-screen flex items-center ml-10 relative z-10">
+				<div class="bg-black/50 backdrop-blur-md p-8 rounded-2xl max-w-md">
+					<h3 class="text-2xl font-bold mb-4">Vue de face</h3>
+					<Image src={rendu06} alt="Rendu de face" class="w-full h-48 object-cover rounded-lg mb-4" />
+					<p class="text-gray-300">
+						Cette vue met en avant les proportions générales de la tasse ainsi que la lecture
+						du matériau sous un éclairage studio.
+					</p>
+				</div>
+			</section>
+
+			<!-- VUE LATÉRALE -->
+			<section class="h-screen flex items-center ml-10 relative z-10">
+				<div class="bg-black/50 backdrop-blur-md p-8 rounded-2xl max-w-md">
+					<h3 class="text-2xl font-bold mb-4">Vue latérale</h3>
+					<Image src={rendu07} alt="Rendu latéral" class="w-full h-48 object-cover rounded-lg mb-4" />
+					<p class="text-gray-300">
+						La vue latérale permet d’observer le travail effectué sur l’anse et l’épaisseur
+						des parois.
+					</p>
+				</div>
+			</section>
+
+			<!-- VUE FINALE -->
+			<section class="h-screen flex items-center ml-10 relative z-10">
+				<div class="bg-black/50 backdrop-blur-md p-8 rounded-2xl max-w-md">
+					<h3 class="text-2xl font-bold mb-4">Vue finale</h3>
+					<Image src={rendu08} alt="Rendu final" class="w-full h-48 object-cover rounded-lg mb-4" />
+					<p class="text-gray-300">
+						Rendu final intégrant l’éclairage, l’environnement HDR et l’animation complète.
+					</p>
+				</div>
+			</section>
+
+
+			<!-- 2. Photos réelles (référence) -->
+      <section class="relative z-10 py-24 px-10 bg-gray-950">
+        <h2 class="text-3xl font-bold text-center mb-8">Photos de référence</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <Image src={real01} alt="Photo réelle de la tasse" class="rounded-xl object-cover" />
+          <Image src={real02} alt="Photo réelle de la tasse" class="rounded-xl object-cover" />
+        </div>
+        <p class="text-gray-400 text-center mt-8 max-w-2xl mx-auto">
+          Ces photos ont servi de référence pour la forme, l'anse et le matériau.
+        </p>
+      </section>
 		</div>
 	</body>
 </html>
@@ -124,13 +211,13 @@ import rendu08 from '../img/rendu-08.jpg';
 
 	// Chargement du modèle depuis le dossier public
 	gltfLoader.load(
-		'/TP_Blender_Mug.glb',
+		'/TP_Blender_Mug (2).glb',
 		(gltf) => {
 			loadedModel = gltf.scene;
 			
 			// Configuration du modèle - centré au milieu de la scène
-			loadedModel.scale.set(0.7, 0.7, 0.7);
-			loadedModel.position.set(0, -1, 0);
+			loadedModel.scale.set(0.6, 0.6, 0.6);
+			loadedModel.position.set(1.3, -1, 0);
 			
 			// Activation des ombres pour tous les meshes
 			loadedModel.traverse((child) => {
@@ -202,84 +289,31 @@ import rendu08 from '../img/rendu-08.jpg';
 
 	// === SCROLLTRIGGER ANIMATIONS ===
 	
-	// Timeline principale pilotée par le scroll
-	const timeline = gsap.timeline({
-		scrollTrigger: {
-      trigger: 'body', // Élément qui déclenche l'animation (ici tout le body)
-			start: 'top top', // Début de l'animation : quand le haut du body atteint le haut du viewport
-			end: 'bottom bottom', // Fin de l'animation : quand le bas du body atteint le bas du viewport
-			scrub: 1, // Synchronisation avec le scroll (1 = lissage d'1 seconde pour des mouvements fluides)
-			markers: true // Affichage des marqueurs de debug (false = désactivé)
-		}
-	});
-
-	// Paramètres de la rotation circulaire
-	const radius = 5; // Distance de la caméra par rapport à l'objet (réduite)
-	const cameraHeight = 1; // Hauteur de la caméra (constante)
-
-	// Animation de la caméra : rotation complète de 360° autour de l'objet
-	// Utilisation de coordonnées polaires pour un cercle parfait
-	timeline
-		// 0° - Position de départ (devant)
-		.to(camera.position, {
-			x: 0,
-			y: 1,
-			z: 5,
-			duration: 1
-		})
-		// 90° - Côté droit
-		.to(camera.position, {
-			x: 3,
-			y: 0,
-			z: 2,
-			duration: 1
-		})
-    .to(camera.position, {
-			x: 3,
-			y: 0,
-			z: 2,
-			duration: 1
-		})
-		// 360° - Retour au départ
-		.to(camera.position, {
-			x: 0,
-			y: 1,
-			z: 5,
-			duration: 1
-		});
-
-  timeline
-		.to(mainGroup.rotation, {
-			y: Math.PI * 2,
-			duration: 3
-		}, 0)
-		// .to(mainGroup.position, {
-		// 	y: 2,
-		// 	duration: 1.5,
-		// 	yoyo: true,
-		// 	repeat: 1
-		// }, 0);
-
-	// === GESTION DU REDIMENSIONNEMENT ===
-	
-	window.addEventListener('resize', () => {
-		camera.aspect = window.innerWidth / window.innerHeight;
-		camera.updateProjectionMatrix();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-	});
-
-	// === BOUCLE D'ANIMATION ===
-	
-	function animate() {
-		requestAnimationFrame(animate);
-
-		// La caméra regarde toujours le centre de la scène
-		camera.lookAt(0, 0, 0);
-
-		// Rendu de la scène
-		renderer.render(scene, camera);
+	// ✅ SCROLL ANIMATION — ROTATION DE LA TASSE
+gsap.timeline({
+	scrollTrigger: {
+		trigger: 'body',
+		start: 'top top',
+		end: 'bottom bottom',
+		scrub: 1,
 	}
+}).to(mainGroup.rotation, {
+	y: Math.PI * 5,
+	ease: 'none'
+});
 
-	// Démarrage de l'animation
-	animate();
+// Resize
+window.addEventListener('resize', () => {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Render loop
+function animate() {
+	requestAnimationFrame(animate);
+	camera.lookAt(0, 0, 0);
+	renderer.render(scene, camera);
+}
+animate();
 </script>
